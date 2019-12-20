@@ -4,6 +4,11 @@
     <b-alert show variant="danger" dismissible>
       Dismissible Alert!
     </b-alert>
+    <div>
+      <button @click="submitNewCreditCard">增加</button>
+      {{ newCreditCard.error }}
+    </div>
+
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -38,7 +43,26 @@ export default {
   name: 'HelloWorld',
   props: {
     msg: String
-  }
+  },
+  data() {
+    return {
+        newCreditCard: {
+          number: '4242424242424242',
+          cvc: '111',
+          exp_month: 1,
+          exp_year: 2020,
+          address_zip: '00000',
+          error: '' // must define this in the beginning or else it won't be monitored
+        }
+    }
+  },
+  methods: {
+    submitNewCreditCard() {
+      // eslint-disable-next-line
+      console.log('do some things')
+      this.newCreditCard.error = 'response.error.message'
+    }
+  },
 }
 </script>
 
