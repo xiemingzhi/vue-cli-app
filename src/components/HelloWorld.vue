@@ -8,7 +8,10 @@
       <button @click="submitNewCreditCard">增加</button>
       {{ newCreditCard.error }}
     </div>
+    <div v-if="sources">This only checks for if sources exist</div>
+    <div v-if="sources && Object.keys(sources).length != 0">Render only if sources length != 0</div>
 
+    <hr>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -53,8 +56,13 @@ export default {
           exp_year: 2020,
           address_zip: '00000',
           error: '' // must define this in the beginning or else it won't be monitored
-        }
+        },
+        sources: {}
     }
+  },
+  mounted: function() {
+    // eslint-disable-next-line
+    console.log('sources length ' + Object.keys(this.sources).length)
   },
   methods: {
     submitNewCreditCard() {
