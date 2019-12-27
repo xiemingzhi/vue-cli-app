@@ -81,10 +81,14 @@ export default {
   created () {
     // eslint-disable-next-line
     console.log('created sources length ' + Object.keys(this.sources).length)
+    //Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders.
+    //this.msg = 'hello world from created'
   },
   mounted: function() {
     // eslint-disable-next-line
     console.log('mounted sources length ' + Object.keys(this.sources).length)
+    //Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders.
+    //this.msg = 'hello world from mounted'
   },
   methods: {
     submitNewCreditCard() {
