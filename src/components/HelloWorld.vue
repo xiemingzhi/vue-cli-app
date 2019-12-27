@@ -10,6 +10,7 @@
     </div>
     <div v-if="sources">This only checks for if sources exist</div>
     <div v-if="sources && Object.keys(sources).length != 0">Render only if sources length != 0</div>
+    <div>Using computed {{ nameModded }}</div>
 
     <hr>
     <p>
@@ -48,6 +49,8 @@ export default {
     msg: String
   },
   data() {
+    // eslint-disable-next-line
+    console.log('data sources:' + this.sources)//happens before created 
     return {
         newCreditCard: {
           number: '4242424242424242',
@@ -60,9 +63,28 @@ export default {
         sources: {}
     }
   },
+  computed: {
+    nameModded() {
+      // eslint-disable-next-line
+      console.log('computed sources length ' + Object.keys(this.sources).length)
+      return this.data 
+    }
+  },
+  watch: {
+    data(newValue, oldValue) {
+      // eslint-disable-next-line
+      console.log(oldValue)
+      // eslint-disable-next-line
+      console.log(newValue)
+    }
+  },
+  created () {
+    // eslint-disable-next-line
+    console.log('created sources length ' + Object.keys(this.sources).length)
+  },
   mounted: function() {
     // eslint-disable-next-line
-    console.log('sources length ' + Object.keys(this.sources).length)
+    console.log('mounted sources length ' + Object.keys(this.sources).length)
   },
   methods: {
     submitNewCreditCard() {
