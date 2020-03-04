@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <b-alert show variant="danger" dismissible>
+    <!-- <b-alert show variant="danger" dismissible>
       Dismissible Alert!
     </b-alert>
     <div>
@@ -10,10 +10,27 @@
     </div>
     <div v-if="sources">This only checks for if sources exist</div>
     <div v-if="sources && Object.keys(sources).length != 0">Render only if sources length != 0</div>
-    <div>Using computed {{ nameModded }}</div>
+    <div>Using computed {{ nameModded }}</div> -->
+    <p>
+      Let us locate you for better results...
+      <button @click="locateMe">Get location</button>
+    </p>
+    
+    <div v-if="errorStr">
+      Sorry, but the following error
+      occurred: {{errorStr}}
+    </div>
+    
+    <div v-if="gettingLocation">
+      <i>Getting your location...</i>
+    </div>
+    
+    <div v-if="location">
+      Your location data is {{ location.coords.latitude }}, {{ location.coords.longitude}}
+    </div>
 
     <hr>
-    <p>
+    <!-- <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
       <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
@@ -38,7 +55,7 @@
       <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
       <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 
@@ -60,7 +77,10 @@ export default {
           address_zip: '00000',
           error: '' // must define this in the beginning or else it won't be monitored
         },
-        sources: {}
+        sources: {},
+        location:null,
+        gettingLocation: false,
+        errorStr:null
     }
   },
   computed: {
@@ -95,6 +115,34 @@ export default {
       // eslint-disable-next-line
       console.log('do some things')
       this.newCreditCard.error = 'response.error.message'
+    },
+    async getLocation() {
+      
+      return new Promise((resolve, reject) => {
+
+        if(!("geolocation" in navigator)) {
+          reject(new Error('Geolocation is not available.'));
+        }
+
+        navigator.geolocation.getCurrentPosition(pos => {
+          resolve(pos);
+        }, err => {
+          reject(err);
+        });
+
+      });
+    },
+    async locateMe() {
+
+      this.gettingLocation = true;
+      try {
+        this.gettingLocation = false;
+        this.location = await this.getLocation();
+      } catch(e) {
+        this.gettingLocation = false;
+        this.errorStr = e.message;
+      }
+      
     }
   },
 }
