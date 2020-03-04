@@ -60,6 +60,8 @@
 </template>
 
 <script>
+import Vue from 'vue'
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -109,6 +111,15 @@ export default {
     console.log('mounted sources length ' + Object.keys(this.sources).length)
     //Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders.
     //this.msg = 'hello world from mounted'
+    Vue.$geocoder.setDefaultMode('lat-lng');
+    var latLngObj = {
+        lat: 37.421512,
+        lng: -122.084101
+    }
+    Vue.$geocoder.send(latLngObj, response => { 
+      // eslint-disable-next-line
+      console.log(response) 
+    });
   },
   methods: {
     submitNewCreditCard() {

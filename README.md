@@ -28,3 +28,13 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ```
 vue add bootstrap-vue
 ```
+
+### Install geocoder
+```
+npm install --save @pderas/vue2-geocoder
+```
+Goto console.cloud.google.com enable billing on project get API key.  
+Enable Maps Javascript API  
+Enable Geocoding API  
+Add API key to .env.local  
+VUE_APP_SECRET=API key  
