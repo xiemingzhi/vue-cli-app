@@ -39,3 +39,7 @@ Enable Maps Javascript API
 Enable Geocoding API  
 Add API key to .env.local  
 VUE_APP_SECRET=API key  
+
+### Distance Matrix Example 
+Enable [Distance Matrix API](https://developers.google.com/maps/documentation/javascript/distancematrix?hl=en_US) in console.cloud.google.com/apis  
+

@@ -136,6 +136,11 @@ export default {
       }
      }
     )
+    var origin1 = new this.google.maps.LatLng(55.930385, -3.118425);
+    //var origin2 = 'Greenwich, England';
+    //var destinationA = 'Stockholm, Sweden';
+    var destinationB = new this.google.maps.LatLng(50.087692, 14.421150);
+    this.fetchDistance(origin1, destinationB)
   },
   methods: {
     submitNewCreditCard() {
@@ -170,7 +175,36 @@ export default {
         this.errorStr = e.message;
       }
       
+    },
+    async fetchDistance(origin, dest) {
+      return new Promise((resolve, reject) => {
+        let response;
+        var service = new this.google.maps.DistanceMatrixService();
+        service.getDistanceMatrix(
+            {
+                origins: [origin],
+                destinations: [dest],
+                travelMode: "DRIVING",
+                unitSystem: this.google.maps.UnitSystem.METRIC,
+                avoidHighways: false,
+                avoidTolls: false
+            },
+            function(resp, status) {                     
+                if (status !== this.google.maps.DistanceMatrixStatus.OK) {
+                    response = reject(status);
+                } else {
+                    response = resolve(resp);
+                    // eslint-disable-next-line
+                    //console.log(response) 
+                    // eslint-disable-next-line
+                    console.log(resp.rows[0].elements[0]) 
+                }
+            }
+        );
+        return response;
+      });
     }
+    
   },
 }
 </script>
