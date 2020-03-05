@@ -31,7 +31,8 @@ vue add bootstrap-vue
 
 ### Install geocoder
 ```
-npm install --save @pderas/vue2-geocoder
+#npm install --save @pderas/vue2-geocoder
+npm install --save google-maps-api-loader
 ```
 Goto console.cloud.google.com enable billing on project get API key.  
 Enable Maps Javascript API  

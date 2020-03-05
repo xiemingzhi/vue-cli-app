@@ -60,7 +60,8 @@
 </template>
 
 <script>
-import Vue from 'vue'
+//import Vue from 'vue'
+import GoogleMapsApiLoader from 'google-maps-api-loader'
 
 export default {
   name: 'HelloWorld',
@@ -82,7 +83,8 @@ export default {
         sources: {},
         location:null,
         gettingLocation: false,
-        errorStr:null
+        errorStr:null,
+        google: null
     }
   },
   computed: {
@@ -106,20 +108,34 @@ export default {
     //Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders.
     //this.msg = 'hello world from created'
   },
-  mounted: function() {
+  async mounted() {
     // eslint-disable-next-line
     console.log('mounted sources length ' + Object.keys(this.sources).length)
     //Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders.
     //this.msg = 'hello world from mounted'
-    Vue.$geocoder.setDefaultMode('lat-lng');
+    //Vue.$geocoder.setDefaultMode('lat-lng');
     var latLngObj = {
         lat: 37.421512,
         lng: -122.084101
     }
-    Vue.$geocoder.send(latLngObj, response => { 
-      // eslint-disable-next-line
-      console.log(response) 
-    });
+    // Vue.$geocoder.send(latLngObj, response => { 
+    //   // eslint-disable-next-line
+    //   console.log(response) 
+    // });
+    // eslint-disable-next-line
+    console.log('key',process.env.VUE_APP_SECRET)
+    const googleMapApi = await GoogleMapsApiLoader({
+      apiKey: process.env.VUE_APP_SECRET
+    })
+    this.google = googleMapApi
+    let geocoder = new this.google.maps.Geocoder();
+    geocoder.geocode({'location': latLngObj}, function(results, status) {
+      if (status === 'OK') {
+        // eslint-disable-next-line
+        console.log(results) 
+      }
+     }
+    )
   },
   methods: {
     submitNewCreditCard() {
