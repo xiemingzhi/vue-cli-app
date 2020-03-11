@@ -3,15 +3,15 @@
     <h1>{{ msg }}</h1>
     <!-- <b-alert show variant="danger" dismissible>
       Dismissible Alert!
-    </b-alert>
-    <div>
+    </b-alert> -->
+    <!-- <div>
       <button @click="submitNewCreditCard">增加</button>
       {{ newCreditCard.error }}
     </div>
     <div v-if="sources">This only checks for if sources exist</div>
-    <div v-if="sources && Object.keys(sources).length != 0">Render only if sources length != 0</div>
-    <div>Using computed {{ nameModded }}</div> -->
-    <p>
+    <div v-if="sources && Object.keys(sources).length != 0">Render only if sources length != 0</div> -->
+    <!-- <div>Using computed {{ nameModded }}</div> -->
+    <!-- <p>
       Let us locate you for better results...
       <button @click="locateMe">Get location</button>
     </p>
@@ -27,6 +27,19 @@
     
     <div v-if="location">
       Your location data is {{ location.coords.latitude }}, {{ location.coords.longitude}}
+    </div> -->
+    <div >
+      <p>Upload an image to Firebase:</p>
+      <input type="file" @change="previewImage" accept="image/*" >
+    </div>
+    <div>
+      <p>Progress: {{uploadValue.toFixed()+"%"}}
+      <progress id="progress" :value="uploadValue" max="100" ></progress>  </p>
+    </div>
+    <div v-if="imageData!=null">
+        <img class="preview" :src="picture">
+        <br>
+      <button @click="onUpload">Upload</button>
     </div>
 
     <hr>
@@ -62,6 +75,7 @@
 <script>
 //import Vue from 'vue'
 import GoogleMapsApiLoader from 'google-maps-api-loader'
+import firebase from 'firebase';
 
 export default {
   name: 'HelloWorld',
@@ -84,7 +98,10 @@ export default {
         location:null,
         gettingLocation: false,
         errorStr:null,
-        google: null
+        google: null,
+        imageData: null,
+        picture: null,
+        uploadValue: 0
     }
   },
   computed: {
@@ -203,6 +220,28 @@ export default {
         );
         return response;
       });
+    },
+    previewImage(event) {
+      this.uploadValue = 0;
+      this.picture = null;
+      this.imageData = event.target.files[0];
+    },
+
+    onUpload(){
+      this.picture = null;
+      const storageRef = firebase.storage().ref(`images/${this.imageData.name}`).put(this.imageData);
+      storageRef.on(`state_changed`,snapshot=>{
+          this.uploadValue = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+        }, error=>{
+          // eslint-disable-next-line
+          console.log(error.message)
+        }, ()=>{
+          this.uploadValue = 100;
+          storageRef.snapshot.ref.getDownloadURL().then((url)=>{
+            this.picture = url;
+          });
+        }
+      );
     }
     
   },

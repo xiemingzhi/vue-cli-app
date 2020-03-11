@@ -4,6 +4,7 @@ import Vue from 'vue'
 import './plugins/bootstrap-vue'
 import App from './App.vue'
 import Geocoder from '@pderas/vue2-geocoder'
+import '@/firebase/init'
 
 Vue.config.productionTip = false
 Vue.use(Geocoder, {
@@ -13,7 +14,7 @@ Vue.use(Geocoder, {
   googleMapsApiKey: process.env.VUE_APP_SECRET
 })
 // eslint-disable-next-line no-console
-console.log(process.env.VUE_APP_SECRET)
+console.log('main', process.env.VUE_APP_SECRET)
 
 new Vue({
   render: h => h(App),
