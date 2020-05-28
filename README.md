@@ -72,3 +72,11 @@ match /images/{fileName=**} {
 ```
 See [storage rules](https://firebase.google.com/docs/rules/rules-language)
 
+### Websocket example 
+```
+npm install vue-native-websocket --save
+```
+Add to .env.local
+```
+VUE_APP_SERVER_HOST=ws://echo.websocket.org
+```

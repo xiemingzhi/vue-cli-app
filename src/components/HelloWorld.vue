@@ -12,6 +12,14 @@
       <button @click="decrement">-</button>
     </p>
 
+    <p>{{ socket.message.data}}</p>
+    <form action="#" @submit.prevent="sendMessage(message)">
+      <input type="text" v-model="message"/>
+      <button type="submit" class="btn btn-primary">
+        send message
+      </button>
+    </form>  
+
     <hr>
     <!-- <p>
       For a guide and recipes on how to configure / customize this project,<br>
@@ -44,6 +52,7 @@
 
 <script>
 //import Vue from 'vue'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'HelloWorld',
@@ -54,10 +63,12 @@ export default {
     // eslint-disable-next-line
     console.log('data sources:' + this.sources)//happens before created 
     return {
-        sources: {}
+        sources: {},
+        message: this.msg
     }
   },
   computed: {
+    ...mapState(['socket']),
     nameModded() {
       // eslint-disable-next-line
       console.log('computed sources length ' + Object.keys(this.sources).length)
@@ -90,6 +101,7 @@ export default {
     console.log('key',process.env.VUE_APP_SECRET)
   },
   methods: {
+    ...mapActions(['sendMessage']),
     increment () {
       this.$store.commit('increment')
     },
