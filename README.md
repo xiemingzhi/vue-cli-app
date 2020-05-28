@@ -24,6 +24,11 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+### Add vuex
+```
+npm install vuex --save
+```
+
 ### Install bootstrap
 ```
 vue add bootstrap-vue

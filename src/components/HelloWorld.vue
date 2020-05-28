@@ -6,6 +6,12 @@
     <div v-if="sources && Object.keys(sources).length != 0">Render only if sources length != 0</div>
     <div>Using computed {{ nameModded }}</div>
 
+    <p>{{ count }}</p>
+    <p>
+      <button @click="increment">+</button>
+      <button @click="decrement">-</button>
+    </p>
+
     <hr>
     <!-- <p>
       For a guide and recipes on how to configure / customize this project,<br>
@@ -56,6 +62,9 @@ export default {
       // eslint-disable-next-line
       console.log('computed sources length ' + Object.keys(this.sources).length)
       return this.data 
+    },
+    count() {
+      return this.$store.state.count
     }
   },
   watch: {
@@ -81,7 +90,12 @@ export default {
     console.log('key',process.env.VUE_APP_SECRET)
   },
   methods: {
-    
+    increment () {
+      this.$store.commit('increment')
+    },
+    decrement () {
+      this.$store.commit('decrement')
+    }
   },
 }
 </script>
