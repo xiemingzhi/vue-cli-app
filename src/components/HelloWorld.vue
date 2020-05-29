@@ -12,6 +12,36 @@
       <button @click="decrement">-</button>
     </p>
 
+    <form class="form-inline">
+      <div class="form-group">
+          <label for="connect">WebSocket connection:</label>
+          <button id="connect" class="btn btn-default" type="submit" :disabled="connected == true" @click.prevent="connect">Connect</button>
+          <button id="disconnect" class="btn btn-default" type="submit" :disabled="connected == false" @click.prevent="disconnect">Disconnect
+          </button>
+      </div>
+    </form>
+
+    <form class="form-inline">
+      <div class="form-group">
+          <label for="name">What is your name?</label>
+          <input type="text" id="name" class="form-control" v-model="send_message" placeholder="Your name here...">
+      </div>
+      <button id="send" class="btn btn-default" type="submit" @click.prevent="send">Send</button>
+    </form>
+
+    <table id="conversation" class="table table-striped">
+      <thead>
+          <tr>
+              <th>Greetings</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr v-for="item in received_messages" :key="item">
+              <td>{{ item }}</td>
+          </tr>
+      </tbody>
+    </table>
+
     <hr>
     <!-- <p>
       For a guide and recipes on how to configure / customize this project,<br>
@@ -44,6 +74,8 @@
 
 <script>
 //import Vue from 'vue'
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 
 export default {
   name: 'HelloWorld',
@@ -54,7 +86,10 @@ export default {
     // eslint-disable-next-line
     console.log('data sources:' + this.sources)//happens before created 
     return {
-        sources: {}
+        sources: {},
+        received_messages: [],
+        send_message: null,
+        connected: false
     }
   },
   computed: {
@@ -95,6 +130,45 @@ export default {
     },
     decrement () {
       this.$store.commit('decrement')
+    },
+    send() {
+      // eslint-disable-next-line
+      console.log("Send message:" + this.send_message);
+      if (this.stompClient && this.stompClient.connected) {
+        const msg = { name: this.send_message };
+        this.stompClient.send("/app/hello", JSON.stringify(msg), {});
+      }
+    },
+    connect() {
+      this.socket = new SockJS("http://localhost:8080/gs-guide-websocket");
+      this.stompClient = Stomp.over(this.socket);
+      this.stompClient.connect(
+        {},
+        frame => {
+          this.connected = true;
+          // eslint-disable-next-line
+          console.log(frame);
+          this.stompClient.subscribe("/topic/greetings", tick => {
+            // eslint-disable-next-line
+            console.log(tick);
+            this.received_messages.push(JSON.parse(tick.body).content);
+          });
+        },
+        error => {
+          // eslint-disable-next-line
+          console.log(error);
+          this.connected = false;
+        }
+      );
+    },
+    disconnect() {
+      if (this.stompClient) {
+        this.stompClient.disconnect();
+      }
+      this.connected = false;
+    },
+    tickleConnection() {
+      this.connected ? this.disconnect() : this.connect();
     }
   },
 }

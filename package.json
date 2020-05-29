@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "core-js": "^3.4.3",
+    "sockjs-client": "^1.4.0",
     "vue": "^2.6.10",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "webstomp-client": "^1.2.6"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.6.0",

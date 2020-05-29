@@ -72,3 +72,17 @@ match /images/{fileName=**} {
 ```
 See [storage rules](https://firebase.google.com/docs/rules/rules-language)
 
+### Websocket STOMP example 
+Start springwebsocket server
+```
+mvn spring-boot:run
+http://localhost:8080
+```
+
+Install node dependencies, start server
+```
+npm install sockjs-client --save
+npm install webstomp-client --save
+npm run serve
+http://localhost:8081
+```
