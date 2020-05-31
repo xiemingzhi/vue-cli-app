@@ -12,6 +12,17 @@
       <button @click="decrement">-</button>
     </p>
 
+    <form v-on:submit.prevent="run">
+      <input v-model="msg" type="text" placeholder="Enter message"/>
+      <button v-on:click="run" type="button">{{ buttonLabel }}</button>
+    </form>
+    <p>Number of messages: {{ total_items }} , New message received: “{{ actual_msg }}”</p>
+    <ul>
+      <li v-for="item in items" :key="item.name" v-bind:item="item">
+        {{ item.msg }}
+      </li>
+    </ul>
+
     <hr>
     <!-- <p>
       For a guide and recipes on how to configure / customize this project,<br>
@@ -45,6 +56,9 @@
 <script>
 //import Vue from 'vue'
 
+// eslint-disable-next-line
+var evtSource = false;
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -54,7 +68,11 @@ export default {
     // eslint-disable-next-line
     console.log('data sources:' + this.sources)//happens before created 
     return {
-        sources: {}
+        sources: {},
+        actual_msg: '',
+        total_items: -1,
+        items: [],
+        loading: false
     }
   },
   computed: {
@@ -65,6 +83,9 @@ export default {
     },
     count() {
       return this.$store.state.count
+    },
+    buttonLabel: function() {
+      return (this.loading ? 'Loading…' : 'Go');
     }
   },
   watch: {
@@ -95,6 +116,74 @@ export default {
     },
     decrement () {
       this.$store.commit('decrement')
+    },
+    run: function() {
+    
+      this.reset();
+  
+      var streamUrl = 'http://localhost:3000/events'
+  
+      evtSource = new EventSource(streamUrl);
+      this.loading = true;
+
+      var that = this;
+
+      evtSource.onmessage = function(e) {
+        //messages with no event
+        // eslint-disable-next-line
+        console.log('onmessage', e);
+        var dataList = JSON.parse(e.data);
+        that.total_items = dataList.length;
+        that.items = dataList;
+        if (dataList.length > 0) that.actual_msg = dataList[0];
+      }
+
+       /* This will listen only for events 
+        * similar to the following:
+        * 
+        * event: notice
+        * data: useful data
+        * id: someid
+        *
+        */
+      evtSource.addEventListener("notice", function(e) { 
+        // eslint-disable-next-line
+        console.log(e.data)
+      })
+
+      evtSource.addEventListener('allmessages', function (e) {
+        // eslint-disable-next-line
+        console.log('allmessages', e);
+        var header = JSON.parse(e.data);
+        that.total_items = header.length;
+        that.items = header;
+        //if (header.length > 0) that.actual_msg = header[0];
+      }, false);
+
+      evtSource.addEventListener('newmessage', function (e) {
+        // eslint-disable-next-line
+        console.log('newmessage', e);
+        var item = JSON.parse(e.data);
+        that.items.push(item);
+        that.total_items++;
+        that.actual_msg = item;
+      }, false);
+
+      evtSource.addEventListener('close', function (e) {
+        // eslint-disable-next-line
+        console.log('close', e);
+        evtSource.close();
+        that.loading = false;
+      }, false);
+    },
+    reset: function() {
+      if (evtSource !== false) {
+        evtSource.close();
+      }
+
+      this.loading = false;
+      this.items = [];
+      this.total_items = -1;
     }
   },
 }

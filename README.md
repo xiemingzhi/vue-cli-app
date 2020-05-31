@@ -72,3 +72,21 @@ match /images/{fileName=**} {
 ```
 See [storage rules](https://firebase.google.com/docs/rules/rules-language)
 
+### Server Sent Events example 
+Start [nodeproject](https://github.com/xiemingzhi/nodeproject.git) server
+```
+npm install
+node server.js
+```
+Create some messages 
+```
+curl -X POST \
+ -H "Content-Type: application/json" \
+ -d '{"name": "princess", "msg": "hello world"}'\
+ -s http://localhost:3000/message
+```
+Start vue cli app
+```
+npm run serve
+```
+Open browser http://localhost:8080/
