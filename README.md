@@ -3,6 +3,12 @@ Created from vue-cli.
 
 ## Project setup
 ```
+docker run -it --rm -v /mnt/d/homes/ming/git/vue/vue-cli-app:/home/node/vue-cli-app --entrypoint sh node:24-alpine
+apk add python3
+apk add python3-distutils
+npm uninstall node-sass
+npm install sass
+rm -rf node_modules package-lock.json
 npm install
 ```
 
